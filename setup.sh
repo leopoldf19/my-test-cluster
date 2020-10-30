@@ -9,11 +9,11 @@ kind create cluster --config "${DIR}/cluster.yaml" --kubeconfig "${DIR}/kubeconf
 export KUBECONFIG=${DIR}/kubeconfig.yaml
 
 # pod security policies
-kubectl apply -f https://github.com/appscodelabs/tasty-kube/raw/master/psp/privileged-psp.yaml
-kubectl apply -f https://github.com/appscodelabs/tasty-kube/raw/master/psp/baseline-psp.yaml
-kubectl apply -f https://github.com/appscodelabs/tasty-kube/raw/master/psp/restricted-psp.yaml
-kubectl apply -f https://github.com/appscodelabs/tasty-kube/raw/master/kind/psp/cluster-roles.yaml
-kubectl apply -f https://github.com/appscodelabs/tasty-kube/raw/master/kind/psp/role-bindings.yaml
+kubectl apply -f src/privileged-psp.yaml
+kubectl apply -f src/baseline-psp.yaml
+kubectl apply -f src/restricted-psp.yaml
+kubectl apply -f src/cluster-roles.yaml
+kubectl apply -f src/role-bindings.yaml
 
 # install calico for network policies
 kubectl apply -f https://docs.projectcalico.org/v3.8/manifests/calico.yaml
@@ -93,13 +93,12 @@ kubectl config set-context user2 --cluster=kind-kind --user=user2
 kubectl apply -f src/network-policy-1.yaml
 kubectl apply -f src/network-policy-2.yaml
 
-# apply roles 
-kubectl apply -f src/rbac-r-1.yaml 
-kubectl apply -f src/rbac-r-2.yaml 
+# apply cluster role
+kubectl apply -f src/rbac-cr.yaml
 
 # apply role bindings
-kubectl apply -f src/rbac-rb-1.yaml 
-kubectl apply -f src/rbac-rb-2.yaml 
+kubectl create rolebinding -n user1 read-pods-1 --clusterrole=pod-reader --user=user1
+kubectl create rolebinding -n user2 read-pods-2 --clusterrole=pod-reader --user=user2
 
 # create deployments and expose them
 kubectl apply -f src/deploy-nginx-1.yaml
@@ -112,3 +111,5 @@ kubectl config use-context user1
 kubectl get pods -n user1
 kubectl config use-context user2
 kubectl get pods -n user2
+kubectl config use-context kind-kind
+kubectl get pods
