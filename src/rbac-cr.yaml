@@ -1,13 +1,21 @@
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: pod-reader
+  name: basic-view-edit
 rules:
 - apiGroups:
   - ""
+  - apps
+  - extensions
   resources:
   - pods
+  - services
+  - persistentvolumeclaims
   verbs:
   - get
   - list 
   - watch
+  - create 
+  - update 
+  - patch
+  - delete

@@ -90,26 +90,22 @@ kubectl config set-credentials user2 --client-key=user2.key --client-certificate
 kubectl config set-context user2 --cluster=kind-kind --user=user2
 
 # apply network policies
-kubectl apply -f src/network-policy-1.yaml
-kubectl apply -f src/network-policy-2.yaml
+kubectl apply -f src/network-policy-ns.yaml -n user1
+kubectl apply -f src/network-policy-ns.yaml -n user2
 
 # apply cluster role
 kubectl apply -f src/rbac-cr.yaml
 
 # apply role bindings
-kubectl create rolebinding -n user1 read-pods-1 --clusterrole=pod-reader --user=user1
-kubectl create rolebinding -n user2 read-pods-2 --clusterrole=pod-reader --user=user2
-
-# create deployments and expose them
-kubectl apply -f src/deploy-nginx-1.yaml
-kubectl apply -f src/deploy-nginx-2.yaml
-kubectl expose deployment nginx-deployment-1 -n user1 --type=NodePort --name=nginx-service-1 --port=80
-kubectl expose deployment nginx-deployment-2 -n user2 --type=NodePort --name=nginx-service-2 --port=80
+kubectl create rolebinding -n user1 read-pods-1 --clusterrole=basic-view-edit --user=user1
+kubectl create rolebinding -n user2 read-pods-2 --clusterrole=basic-view-edit --user=user2
 
 # just for testing
 kubectl config use-context user1
+kubectl apply -f src/test-pod.yaml -n user1
 kubectl get pods -n user1
 kubectl config use-context user2
+kubectl apply -f src/test-pod.yaml -n user2
 kubectl get pods -n user2
 kubectl config use-context kind-kind
 kubectl get pods

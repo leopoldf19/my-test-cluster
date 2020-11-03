@@ -7,7 +7,7 @@ kubeadmConfigPatches:
       name: config
     apiServer:
       extraArgs:
-        enable-admission-plugins: NodeRestriction,PodSecurityPolicy
+        enable-admission-plugins: NodeRestriction,PodSecurityPolicy,DefaultStorageClass,AlwaysPullImages,NodeRestriction
 nodes:
 - role: control-plane
 - role: worker
