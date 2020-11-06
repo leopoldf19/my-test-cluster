@@ -9,6 +9,8 @@ rules:
   - extensions
   resources:
   - pods
+  - pods/exec
+  - deployments
   - services
   - persistentvolumeclaims
   verbs:
